@@ -31,36 +31,62 @@ class DBContext {
         });
     } // executeInDB
 
-    addQuestion(question,callback){
-  var dbreq = dbPool.request();
-  var answers = question.answers;
-  dbreq.input("type", sql.NVarChar(50), question.type);
-  dbreq.input("text", sql.NVarChar(100), question.text);
-  dbreq.input("subText", sql.NVarChar(100), question.subText);
-  dbreq.input("oriontion", sql.NVarChar(50), question.layout);
-  dbreq.input("tags", sql.NVarChar(300), question.tags);
-  dbreq.execute("sp_addQuestion", (err, data) => {
-    if (err) {
-      callback (err);
-    } else {
-      answers.forEach(element => {
-        dbreq = dbPool.request();
-        dbreq.input("text", sql.NVarChar(100), element.text);
-        dbreq.input("isCorrect", sql.Bit, element.correct);
-        dbreq.input("questionID", sql.Int, data.recordset[0].id);
-        dbreq.execute("sp_addAnswer", (err, data) => {
-          if (err) {
-            callback (err);
-          }
+  addQuestion(question,callback){
+    var dbreq = dbPool.request();
+    var answers = question.answers;
+    dbreq.input("type", sql.NVarChar(50), question.type);
+    dbreq.input("text", sql.NVarChar(100), question.text);
+    dbreq.input("subText", sql.NVarChar(100), question.subText);
+    dbreq.input("oriontion", sql.NVarChar(50), question.layout);
+    dbreq.input("tags", sql.NVarChar(300), question.tags);
+    dbreq.execute("sp_addQuestion", (err, data) => {
+      if (err) {
+        callback (err);
+      } else {
+        answers.forEach(element => {
+          dbreq = dbPool.request();
+          dbreq.input("text", sql.NVarChar(100), element.text);
+          dbreq.input("isCorrect", sql.Bit, element.correct);
+          dbreq.input("questionID", sql.Int, data.recordset[0].id);
+          dbreq.execute("sp_addAnswer", (err, data) => {
+            if (err) {
+              callback (err);
+            }
+          });
         });
-      });
-      callback(data);
-    }
-  });
-    }
+        callback(data);
+      }
+    });
+  }
 
      addTest(test,callback){
-        callback(test);
+      var dbreq = dbPool.request();
+      dbreq.input("name", sql.NVarChar(50), test.name);
+      dbreq.input("lastModifiedDate", sql.Date,  test.lastModifiedDate );
+      dbreq.input("isActive", sql.Bit, test.isActive);
+      dbreq.input("version", sql.Int, test.version);
+      dbreq.input("link", sql.NVarChar(100), test.link);
+      dbreq.input("passingGrade", sql.Float, test.passingGrade);
+      dbreq.input("header", sql.NVarChar(100), test.header);
+      dbreq.input("messageOnSuccess", sql.NVarChar(100), test.messageOnSuccess);
+      dbreq.input("messageOnFailure", sql.NVarChar(100), test.messageOnFailure);
+      dbreq.input("mailSender", sql.NVarChar(100), test.mailSender);
+      dbreq.input("CC", sql.NVarChar(100), test.CC);
+      dbreq.input("BCC", sql.NVarChar(100), test.BCC);
+      dbreq.input("successMessageBody", sql.NVarChar(400), test.successMessageBody);
+      dbreq.input("successMessageSubject", sql.NVarChar(400), test.successMessageSubject);
+      dbreq.input("failMessageBody", sql.NVarChar(400), test.failMessageBody);
+      dbreq.input("failMessageSubject", sql.NVarChar(400), test.failMessageSubject);
+      dbreq.input("fieldID", sql.Int, test.fieldID);
+
+      dbreq.execute("sp_addTest",(err,data)=>{
+        if (err){
+          callback(err);
+        }else{
+          callback(data)
+        }
+      });
+
      }
 
 }
