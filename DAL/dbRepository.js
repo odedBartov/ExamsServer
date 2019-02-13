@@ -1,7 +1,6 @@
 var sql = require("mssql");
 var config = require("./dbconfig");
 
-
 const dbPool = new sql.ConnectionPool(config, err => {
     if (err) {
         console.log(config);
@@ -11,8 +10,6 @@ const dbPool = new sql.ConnectionPool(config, err => {
       console.log("connected to DB");
     }
 });
-
-
 
 
 class DBContext {
