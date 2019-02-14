@@ -8,7 +8,7 @@
       "type": "node",
       "request": "launch",
       "name": "Launch Program",
-      "program": "${workspaceFolder}/DB_Manager.js"
+      "program": "${workspaceFolder}/app.js"
     }
   ]
 }
