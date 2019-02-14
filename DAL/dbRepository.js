@@ -99,9 +99,20 @@ class DBContext {
       });
      }
 
+     getTestByLink(testLink,callback){
+      var dbreq = dbPool.request();
+      dbreq.input("testLink", sql.NVarChar(200), testLink);
+      dbreq.execute("sp_getTestByLink",(err,data)=>{
+        if (err){
+          callback(err);
+        }else{
+          console.log(data.recordset);
+          callback(data.recordset);
+        }
+      });
+     }
+
+
+
 }
-
-
-
-
 module.exports = new DBContext();
