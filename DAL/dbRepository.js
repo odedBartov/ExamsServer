@@ -86,6 +86,19 @@ class DBContext {
 
      }
 
+     getTestById(testId,callback){
+      var dbreq = dbPool.request();
+      dbreq.input("testId", sql.NVarChar(50), testId);
+      dbreq.execute("sp_getTestById",(err,data)=>{
+        if (err){
+          callback(err);
+        }else{
+          console.log(data.recordset);
+          callback(data.recordset);
+        }
+      });
+     }
+
 }
 
 
