@@ -53,17 +53,16 @@ class DBContext {
     });
   }
 
-  getQuestions(fieldID, callback){
+  getQuestions(fieldID, callback) {
     var dbreq = dbPool.request();
-    dbreq.input('fieldID', sql.Int, fieldID)
-    dbreq.execute('sp_getQuesions', (err, data) => {
+    dbreq.input("fieldID", sql.Int, fieldID);
+    dbreq.execute("sp_getQuesions", (err, data) => {
       if (err) {
         callback(err);
-      }
-      else {
+      } else {
         callback(data.recordsets);
       }
-    })
+    });
   }
 
   addTest(test, callback) {
@@ -107,18 +106,43 @@ class DBContext {
     });
   }
 
-  login(data, callback){
+  login(data, callback) {
     var dbreq = dbPool.request();
-    dbreq.input('email', sql.NVarChar(50), data.email)
-    dbreq.input('password', sql.NVarChar(50), data.password)
+    dbreq.input("email", sql.NVarChar(50), data.email);
+    dbreq.input("password", sql.NVarChar(50), data.password);
     dbreq.execute("sp_login", (err, data) => {
       if (err) {
         callback(err);
-      }
-      else{
+      } else {
         callback(data.recordsets);
       }
-    })
+    });
+  }
+
+  getTestById(testId, callback) {
+    var dbreq = dbPool.request();
+    dbreq.input("testId", sql.NVarChar(50), testId);
+    dbreq.execute("sp_getTestById", (err, data) => {
+      if (err) {
+        callback(err);
+      } else {
+        console.log(data.recordset);
+        callback(data.recordset);
+      }
+    });
+  }
+
+  getTestByLink(testLink, callback) {
+    var dbreq = dbPool.request();
+    dbreq.input("testLink", sql.NVarChar(200), testLink);
+    dbreq.execute("sp_getTestByLink", (err, data) => {
+      if (err) {
+        callback(err);
+      } else {
+        console.log(data.recordset);
+        callback(data.recordset);
+      }
+    });
   }
 }
 
