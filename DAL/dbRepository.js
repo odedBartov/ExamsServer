@@ -53,6 +53,19 @@ class DBContext {
     });
   }
 
+  getQuestions(fieldID, callback){
+    var dbreq = dbPool.request();
+    dbreq.input('fieldID', sql.Int, fieldID)
+    dbreq.execute('sp_getQuesions', (err, data) => {
+      if (err) {
+        callback(err);
+      }
+      else {
+        callback(data.recordsets);
+      }
+    })
+  }
+
   addTest(test, callback) {
     var dbreq = dbPool.request();
     dbreq.input("name", sql.NVarChar(50), test.name);

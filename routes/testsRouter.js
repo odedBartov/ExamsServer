@@ -7,5 +7,10 @@ router.post("/addTest", function(req, res) {
     mainDB.addTest(req.body,(data)=>{res.json(data)})
 });
 
+router.post("/getQuestions", function(req, res) {
+    console.log(req.body);
+    mainDB.getQuestions(req.body, (data) => {res.json(data)})
+})
+
 
 module.exports = router;
