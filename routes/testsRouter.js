@@ -18,8 +18,10 @@ router.get("/getTestById/:testId",function(req,res){
 
 //get test by link  example: http:/localhost:4040/testsapi/getTestByLink?testLink=lala/lala
 router.get("/getTestByLink",function(req,res){
-  mailService.sendtestmail();
-  console.log(req.query.testLink);
+ //mailService.init();
+ //odedoded777@gmail.com
+  mailService.sendActivateMail("odedoded777@gmail.com");
+ // console.log(req.query.testLink);
   mainDB.getTestByLink(req.query.testLink,(data)=>{res.json(data)})
 //res.send(req.params);
 });

@@ -2,13 +2,14 @@ var nodemailer = require('nodemailer');
 
 class mailer{
 
-    transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: '@gmail.com',
-            pass: ''
-        }
-    });
+    //  transporter = nodemailer.createTransport({
+    //         service: 'gmail',
+    //         auth: {
+    //             user: "exams.system1@gmail.com‏",
+    //             pass: 'exam1234'
+    //         }
+    //     });
+    
 
     sendOnFinisedTest(source,target,subject,text){
         //set Mail Options
@@ -26,12 +27,22 @@ class mailer{
             }
         });
     }
-    sendActivateMail(source,target){
+    sendActivateMail(target){
+   
+        var transporter = nodemailer.createTransport({
+        service: 'Gmail',
+      
+        auth: {
+            user: 'exams.system1@gmail.com',
+            pass: 'exam1234'
+        }
+    });
+
         var mailOptions = {
-            from: source,
+            from: 'exams.system1@gmail.com',
             to: target,
             subject: "welcome to exams system as admin",
-            text: "active your user in this link : www.link.com"
+            text: "active your user in this link : www.link.com/actibate/123"
         };
         transporter.sendMail(mailOptions, function(error, info){
             if (error) {
