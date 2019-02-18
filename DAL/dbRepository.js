@@ -56,7 +56,7 @@ class DBContext {
   getQuestions(fieldID, callback){
     var dbreq = dbPool.request();
     dbreq.input('fieldID', sql.Int, fieldID)
-    dbreq.execute('sp_getQuesions', (err, data) => {
+    dbreq.execute('sp_getQuestions', (err, data) => {
       if (err) {
         callback(err);
       }

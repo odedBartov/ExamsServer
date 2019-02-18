@@ -9,7 +9,9 @@ router.post("/addTest", function(req, res) {
 
 router.post("/getQuestions", function(req, res) {
     console.log(req.body);
-    mainDB.getQuestions(req.body, (data) => {res.json(data)})
+    mainDB.getQuestions(req.body.id, (data) => {
+        console.log(data);
+        res.json(data)})
 })
 
 
