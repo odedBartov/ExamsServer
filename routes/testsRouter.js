@@ -6,6 +6,8 @@ var mainDB = require('../DAL/dbRepository');
 
 //add test
 router.post("/addTest", function(req, res) {
+  //console.log('in add test');
+  //console.log(req.body);
     mainDB.addTest(req.body,(data)=>{res.json(data)})
 });
 

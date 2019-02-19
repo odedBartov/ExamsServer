@@ -12,8 +12,8 @@ router.post("/addQuestion", function(req, res) {
   mainDB.addQuestion(req.body, data => {
     res.json(data);
   });
+  
   // mainDB.addQuestion(req.body).Subscribe(() => {res.end("questions created")});
-
   //res.end("hello hello");
 });
 

@@ -66,8 +66,10 @@ class DBContext {
   }
 
   addTest(test, callback) {
+
+    console.log(test);
     var dbreq = dbPool.request();
-    dbreq.input("name", sql.NVarChar(50), test.name);
+    dbreq.input("name", sql.NVarChar(50), test.testName);
     dbreq.input("lastModifiedDate", sql.Date, test.lastModifiedDate);
     dbreq.input("isActive", sql.Bit, test.isActive);
     dbreq.input("version", sql.Int, test.version);
