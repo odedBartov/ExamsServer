@@ -12,6 +12,15 @@ const dbPool = new sql.ConnectionPool(config, err => {
 });
 
 class DBContext {
+  answerToTVP(answers) {
+    let tbl = new sql.Table();
+    tbl.columns.add("text", sql.NVarChar(100));
+    tbl.columns.add("isCorrect", sql.Bit);
+    answers.forEach(element => {
+      tbl.rows.add(element.text, element.correct);
+    });
+    return tbl;
+  }
   executeInDB(callback) {
     var req = dbPool.request();
     req.input("FName", sql.NVarChar(50), "Jerry");
@@ -31,45 +40,71 @@ class DBContext {
     dbreq.input("type", sql.NVarChar(50), question.type);
     dbreq.input("text", sql.NVarChar(100), question.text);
     dbreq.input("subText", sql.NVarChar(100), question.subText);
-    dbreq.input("oriontion", sql.NVarChar(50), question.layout);
+    dbreq.input("layout", sql.NVarChar(50), question.layout);
     dbreq.input("tags", sql.NVarChar(300), question.tags);
+    dbreq.input("fieldID", sql.Int, question.fieldID);
+    dbreq.input("answers", sql.TVP, this.answerToTVP(question.answers));
     dbreq.execute("sp_addQuestion", (err, data) => {
       if (err) {
         callback(err);
       } else {
-        answers.forEach(element => {
-          dbreq = dbPool.request();
-          dbreq.input("text", sql.NVarChar(100), element.text);
-          dbreq.input("isCorrect", sql.Bit, element.correct);
-          dbreq.input("questionID", sql.Int, data.recordset[0].id);
-          dbreq.execute("sp_addAnswer", (err, data) => {
-            if (err) {
-              callback(err);
-            }
-          });
-        });
+        callback(data.recordset);
+        // answers.forEach(element => {
+        //   dbreq = dbPool.request();
+        //   dbreq.input("text", sql.NVarChar(100), element.text);
+        //   dbreq.input("isCorrect", sql.Bit, element.correct);
+        //   dbreq.input("questionID", sql.Int, data.recordset[0].id);
+        //   dbreq.execute("sp_addAnswer", (err, data) => {
+        //     if (err) {
+        //       callback(err);
+        //     }
+        //   });
+        // });
+        // callback(data.recordset);
+      }
+    });
+  }
+  getQuestions(fieldID, callback) {
+    var dbreq = dbPool.request();
+    dbreq.input("fieldID", sql.Int, fieldID);
+    dbreq.execute("sp_getQuestions", (err, data) => {
+      if (err) {
+        callback(err);
+      } else {
         callback(data.recordset);
       }
     });
   }
-
-  getQuestions(fieldID, callback) {
+  updateQuestion(question, callback) {
     var dbreq = dbPool.request();
-<<<<<<< HEAD
-    dbreq.input('fieldID', sql.Int, fieldID)
-    dbreq.execute('sp_getQuestions', (err, data) => {
-=======
-    dbreq.input("fieldID", sql.Int, fieldID);
-    dbreq.execute("sp_getQuesions", (err, data) => {
->>>>>>> 0c5bdc9ac6d8ecf649d4db2bda2ed54d05a122d5
+    var answers = question.answers;
+    dbreq.input("ID", sql.Int, question.ID);
+    dbreq.input("type", sql.NVarChar(50), question.type);
+    dbreq.input("text", sql.NVarChar(100), question.text);
+    dbreq.input("subText", sql.NVarChar(100), question.subText);
+    dbreq.input("layout", sql.NVarChar(50), question.layout);
+    dbreq.input("tags", sql.NVarChar(300), question.tags);
+    dbreq.input("fieldID", sql.Int, question.fieldID);
+    dbreq.input("answers", sql.TVP, this.answerToTVP(question.answers));
+    dbreq.execute("sp_updateQuestion", (err, data) => {
       if (err) {
         callback(err);
       } else {
-        callback(data.recordsets);
+        callback(data.recordset);
       }
     });
   }
-
+  getAnswers(questionID, callback) {
+    var dbreq = dbPool.request();
+    dbreq.input("questionID", sql.Int, questionID);
+    dbreq.execute("sp_getAnswers", (err, data) => {
+      if (err) {
+        callback(err);
+      } else {
+        callback(data.recordset);
+      }
+    });
+  }
   addTest(test, callback) {
     var dbreq = dbPool.request();
     dbreq.input("name", sql.NVarChar(50), test.name);
