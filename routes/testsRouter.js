@@ -19,7 +19,7 @@ router.post("/getQuestions", function(req, res) {
 //get test by id    example: http:/localhost:4040/testsapi/getTestById/7
 router.get("/getTestById/:testId",function(req,res){
   //console.log(req.params['testId']);
-  mainDB.getTestById(req.params['testId'],(data)=>{res.json(data)})
+  mainDB.getTestById(req.params['testId'],(data)=>{res.json(data)});
 //res.send(req.params);
 });
 
@@ -27,12 +27,31 @@ router.get("/getTestById/:testId",function(req,res){
 router.get("/getTestByLink",function(req,res){
  //mailService.init();
  //odedoded777@gmail.com
-  mailService.sendActivateMail("odedoded777@gmail.com");
+  //mailService.sendActivateMail("odedoded777@gmail.com");
  // console.log(req.query.testLink);
-  mainDB.getTestByLink(req.query.testLink,(data)=>{res.json(data)})
+  mainDB.getTestByLink(req.query.testLink,(data)=>{res.json(data)});
 //res.send(req.params);
 });
 
+//getAllfields
+router.get("/getAllFields",function(req,res){
+  //console.log(req.params['testId']);
+  mainDB.getAllFields((data)=>{res.json(data)});
+//res.send(req.params);
+});
+
+//activate test
+router.post("/activateTest", function(req, res) {
+  console.log(req.body);
+  mainDB.activateTest(req.body, (data) => {res.json(data)})
+})
+
+//get test by fieldID
+router.get("/getTestByFieldId/:fieldId",function(req,res){
+  //console.log(req.params['testId']);
+  mainDB.getTestByFieldId(req.params['fieldId'],(data)=>{res.json(data)});
+//res.send(req.params);
+});
 //delete test
 
 //add questions to test
