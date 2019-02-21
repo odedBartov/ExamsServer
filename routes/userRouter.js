@@ -8,6 +8,15 @@ router.post("/temp", function(req, res, next) {
   mainDB.executeInDB(data => res.json(data));
 });
 
+router.post("/addQuestion", function(req, res) {
+  mainDB.addQuestion(req.body, data => {
+    res.json(data);
+  });
+  
+  // mainDB.addQuestion(req.body).Subscribe(() => {res.end("questions created")});
+  //res.end("hello hello");
+});
+
 router.post("/login", function(req, res) {
   mainDB.login(req.body, data => {
     res.json(data);

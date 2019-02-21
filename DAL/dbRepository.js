@@ -106,8 +106,10 @@ class DBContext {
     });
   }
   addTest(test, callback) {
+
+    console.log(test);
     var dbreq = dbPool.request();
-    dbreq.input("name", sql.NVarChar(50), test.name);
+    dbreq.input("name", sql.NVarChar(50), test.testName);
     dbreq.input("lastModifiedDate", sql.Date, test.lastModifiedDate);
     dbreq.input("isActive", sql.Bit, test.isActive);
     dbreq.input("version", sql.Int, test.version);
@@ -119,25 +121,13 @@ class DBContext {
     dbreq.input("mailSender", sql.NVarChar(100), test.mailSender);
     dbreq.input("CC", sql.NVarChar(100), test.CC);
     dbreq.input("BCC", sql.NVarChar(100), test.BCC);
-    dbreq.input(
-      "successMessageBody",
-      sql.NVarChar(400),
-      test.successMessageBody
-    );
-    dbreq.input(
-      "successMessageSubject",
-      sql.NVarChar(400),
-      test.successMessageSubject
-    );
+    dbreq.input("successMessageBody",sql.NVarChar(400),test.successMessageBody);
+    dbreq.input("successMessageSubject",sql.NVarChar(400),test.successMessageSubject);
     dbreq.input("failMessageBody", sql.NVarChar(400), test.failMessageBody);
-    dbreq.input(
-      "failMessageSubject",
-      sql.NVarChar(400),
-      test.failMessageSubject
-    );
+    dbreq.input("failMessageSubject",sql.NVarChar(400),test.failMessageSubject);
     dbreq.input("fieldID", sql.Int, test.fieldID);
 
-    dbreq.execute("sp_addTest", (err, data) => {
+    dbreq.execute("sp_addTest2", (err, data) => {
       if (err) {
         callback(err);
       } else {
@@ -178,6 +168,45 @@ class DBContext {
       } else {
         console.log(data.recordset);
         callback(data.recordset);
+      }
+    });
+  }
+
+  getAllFields(callback){
+    var dbreq = dbPool.request();
+    dbreq.execute("sp_getAllFields", (err, data) => {
+      if (err) {
+        callback(err);
+      } else {
+        console.log(data.recordsets);
+        callback(data.recordsets);
+      }
+    });
+  }
+
+  activateTest(testId,callback){
+    var dbreq = dbPool.request();
+    console.log(testId.testID);
+    dbreq.input("testID", sql.Int, testId.testID);
+    dbreq.execute("sp_activateTest2", (err, data) => {
+      if (err) {
+        callback(err);
+      } else {
+        callback(data);
+      }
+    });
+  }
+
+  
+  getTestByFieldId(fieldId, callback) {
+    var dbreq = dbPool.request();
+    dbreq.input("fieldID", sql.Int, fieldId);
+    dbreq.execute("sp_getTestsByField", (err, data) => {
+      if (err) {
+        callback(err);
+      } else {
+        console.log(data.recordsets);
+        callback(data.recordsets);
       }
     });
   }
