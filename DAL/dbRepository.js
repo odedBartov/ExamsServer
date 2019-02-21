@@ -145,7 +145,6 @@ class DBContext {
       }
     });
   }
-
   login(data, callback) {
     var dbreq = dbPool.request();
     dbreq.input("email", sql.NVarChar(50), data.email);
@@ -158,7 +157,6 @@ class DBContext {
       }
     });
   }
-
   getTestById(testId, callback) {
     var dbreq = dbPool.request();
     dbreq.input("testId", sql.NVarChar(50), testId);
@@ -171,7 +169,6 @@ class DBContext {
       }
     });
   }
-
   getTestByLink(testLink, callback) {
     var dbreq = dbPool.request();
     dbreq.input("testLink", sql.NVarChar(200), testLink);
