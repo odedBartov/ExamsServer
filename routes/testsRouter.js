@@ -46,12 +46,19 @@ router.post("/activateTest", function(req, res) {
   mainDB.activateTest(req.body, (data) => {res.json(data)})
 })
 
-//get test by fieldID
-router.get("/getTestByFieldId/:fieldId",function(req,res){
+//get tests by fieldID
+router.get("/getTestsByFieldId/:fieldId",function(req,res){
   //console.log(req.params['testId']);
-  mainDB.getTestByFieldId(req.params['fieldId'],(data)=>{res.json(data)});
+  mainDB.getTestsByFieldId(req.params['fieldId'],(data)=>{res.json(data)});
 //res.send(req.params);
 });
+
+//get questions for selection table
+router.get("/getQuestionsByFieldId/:fieldId",function(req,res){
+  mainDB.getQuestionByFieldId(req.params['fieldId'],(data)=>{res.json(data)});
+});
+
+
 //delete test
 
 //add questions to test

@@ -87,7 +87,7 @@ class DBContext {
     dbreq.input("failMessageSubject",sql.NVarChar(400),test.failMessageSubject);
     dbreq.input("fieldID", sql.Int, test.fieldID);
 
-    dbreq.execute("sp_addTest2", (err, data) => {
+    dbreq.execute("sp_addTest", (err, data) => {
       if (err) {
         callback(err);
       } else {
@@ -161,10 +161,10 @@ class DBContext {
   }
 
   
-  getTestByFieldId(fieldId, callback) {
+  getTestsByFieldId(fieldId, callback) {
     var dbreq = dbPool.request();
     dbreq.input("fieldID", sql.Int, fieldId);
-    dbreq.execute("sp_getTestsByField", (err, data) => {
+    dbreq.execute("sp_getTestsByFieldForTableTRY2", (err, data) => {
       if (err) {
         callback(err);
       } else {
@@ -173,6 +173,21 @@ class DBContext {
       }
     });
   }
+
+  getQuestionByFieldId(fieldId, callback) {
+    var dbreq = dbPool.request();
+    dbreq.input("fieldID", sql.Int, fieldId);
+    dbreq.execute("sp_getQuestionsByFieldForTable", (err, data) => {
+      if (err) {
+        callback(err);
+      } else {
+        console.log(data.recordsets);
+        callback(data.recordsets);
+      }
+    });
+  }
+
+
 }
 
 module.exports = new DBContext();
