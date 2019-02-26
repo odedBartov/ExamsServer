@@ -12,7 +12,7 @@ const dbPool = new sql.ConnectionPool(config, err => {
 });
 
 class DBContext {
-  answerToTVP(answers) {
+  answersToTVP(answers) {
     let tbl = new sql.Table();
     tbl.columns.add("text", sql.NVarChar(100));
     tbl.columns.add("isCorrect", sql.Bit);
@@ -21,6 +21,16 @@ class DBContext {
     });
     return tbl;
   }
+  answeredQuestionsToTVP(answersIDs) {
+    let tbl = new sql.Table();
+    // tbl.columns.add("userID", sql.Int);
+    tbl.columns.add("answerID", sql.Int);
+    answersIDs.forEach(element => {
+      tbl.rows.add(element);
+    });
+    return tbl;
+  }
+
   executeInDB(callback) {
     var req = dbPool.request();
     req.input("FName", sql.NVarChar(50), "Jerry");
@@ -36,31 +46,21 @@ class DBContext {
 
   addQuestion(question, callback) {
     var dbreq = dbPool.request();
-    var answers = question.answers;
+    // var answers = question.answers;
     dbreq.input("type", sql.NVarChar(50), question.type);
     dbreq.input("text", sql.NVarChar(100), question.text);
     dbreq.input("subText", sql.NVarChar(100), question.subText);
     dbreq.input("layout", sql.NVarChar(50), question.layout);
     dbreq.input("tags", sql.NVarChar(300), question.tags);
     dbreq.input("fieldID", sql.Int, question.fieldID);
-    dbreq.input("answers", sql.TVP, this.answerToTVP(question.answers));
+    dbreq.input("answers", sql.TVP, this.answersToTVP(question.answers));
+    dbreq.input("corrects", sql.Int, question.answers.filter(a => a.correct).length
+    );
     dbreq.execute("sp_addQuestion", (err, data) => {
       if (err) {
         callback(err);
       } else {
         callback(data.recordset);
-        // answers.forEach(element => {
-        //   dbreq = dbPool.request();
-        //   dbreq.input("text", sql.NVarChar(100), element.text);
-        //   dbreq.input("isCorrect", sql.Bit, element.correct);
-        //   dbreq.input("questionID", sql.Int, data.recordset[0].id);
-        //   dbreq.execute("sp_addAnswer", (err, data) => {
-        //     if (err) {
-        //       callback(err);
-        //     }
-        //   });
-        // });
-        // callback(data.recordset);
       }
     });
   }
@@ -86,6 +86,11 @@ class DBContext {
     dbreq.input("tags", sql.NVarChar(300), question.tags);
     dbreq.input("fieldID", sql.Int, question.fieldID);
     dbreq.input("answers", sql.TVP, this.answerToTVP(question.answers));
+    dbreq.input(
+      "corrects",
+      sql.Int,
+      question.answers.filter(a => a.correct).length
+    );
     dbreq.execute("sp_updateQuestion", (err, data) => {
       if (err) {
         callback(err);
@@ -106,7 +111,6 @@ class DBContext {
     });
   }
   addTest(test, callback) {
-
     console.log(test);
     var dbreq = dbPool.request();
     dbreq.input("name", sql.NVarChar(50), test.testName);
@@ -121,10 +125,22 @@ class DBContext {
     dbreq.input("mailSender", sql.NVarChar(100), test.mailSender);
     dbreq.input("CC", sql.NVarChar(100), test.CC);
     dbreq.input("BCC", sql.NVarChar(100), test.BCC);
-    dbreq.input("successMessageBody",sql.NVarChar(400),test.successMessageBody);
-    dbreq.input("successMessageSubject",sql.NVarChar(400),test.successMessageSubject);
+    dbreq.input(
+      "successMessageBody",
+      sql.NVarChar(400),
+      test.successMessageBody
+    );
+    dbreq.input(
+      "successMessageSubject",
+      sql.NVarChar(400),
+      test.successMessageSubject
+    );
     dbreq.input("failMessageBody", sql.NVarChar(400), test.failMessageBody);
-    dbreq.input("failMessageSubject",sql.NVarChar(400),test.failMessageSubject);
+    dbreq.input(
+      "failMessageSubject",
+      sql.NVarChar(400),
+      test.failMessageSubject
+    );
     dbreq.input("fieldID", sql.Int, test.fieldID);
 
     dbreq.execute("sp_addTest2", (err, data) => {
@@ -135,11 +151,23 @@ class DBContext {
       }
     });
   }
-  login(data, callback) {
+  getTestsForField(fieldID, callback) {
     var dbreq = dbPool.request();
-    dbreq.input("email", sql.NVarChar(50), data.email);
-    dbreq.input("password", sql.NVarChar(50), data.password);
-    dbreq.execute("sp_login", (err, data) => {
+    dbreq.input("fieldId", sql.Int, fieldID);
+    dbreq.execute("sp_getTestsForField", (err, data) => {
+      if (err) {
+        callback(err);
+      } else {
+        callback(data.recordset);
+      }
+    });
+  }
+  getTestsInRange(request, callback) {
+    var dbreq = dbPool.request();
+    dbreq.input("dateFrom", sql.Date, request.dateFrom);
+    dbreq.input("dateTo", sql.Date, request.dateTo);
+    dbreq.input("testID", sql.Int, request.testID);
+    dbreq.execute("sp_getTestsInRange", (err, data) => {
       if (err) {
         callback(err);
       } else {
@@ -171,8 +199,19 @@ class DBContext {
       }
     });
   }
-
-  getAllFields(callback){
+  login(data, callback) {
+    var dbreq = dbPool.request();
+    dbreq.input("email", sql.NVarChar(50), data.email);
+    dbreq.input("password", sql.NVarChar(50), data.password);
+    dbreq.execute("sp_login", (err, data) => {
+      if (err) {
+        callback(err);
+      } else {
+        callback(data.recordsets);
+      }
+    });
+  }
+  getAllFields(callback) {
     var dbreq = dbPool.request();
     dbreq.execute("sp_getAllFields", (err, data) => {
       if (err) {
@@ -183,8 +222,7 @@ class DBContext {
       }
     });
   }
-
-  activateTest(testId,callback){
+  activateTest(testId, callback) {
     var dbreq = dbPool.request();
     console.log(testId.testID);
     dbreq.input("testID", sql.Int, testId.testID);
@@ -196,17 +234,19 @@ class DBContext {
       }
     });
   }
-
-  
-  getTestByFieldId(fieldId, callback) {
+  submitTest(test, callback) {
     var dbreq = dbPool.request();
-    dbreq.input("fieldID", sql.Int, fieldId);
-    dbreq.execute("sp_getTestsByField", (err, data) => {
+    dbreq.input("testID", sql.Int, test.testID);
+    dbreq.input("userID", sql.Int, test.userID);
+    dbreq.input("isFinished", sql.Bit, test.isFinished);
+    dbreq.input("currentQuestion", sql.Int, test.currentQuestion);
+    dbreq.input("grade", sql.Int, test.grade);
+    dbreq.input("answers", sql.TVP, this.answeredQuestionsToTVP(test.answers));
+    dbreq.execute("sp_submitTest", (err, data) => {
       if (err) {
         callback(err);
       } else {
-        console.log(data.recordsets);
-        callback(data.recordsets);
+        callback(data);
       }
     });
   }
