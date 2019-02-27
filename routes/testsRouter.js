@@ -35,7 +35,6 @@ router.get("/getTestByLink",function(req,res){
 
 //getAllfields
 router.get("/getAllFields",function(req,res){
-  //console.log(req.params['testId']);
   mainDB.getAllFields((data)=>{res.json(data)});
 //res.send(req.params);
 });
@@ -48,7 +47,6 @@ router.post("/activateTest", function(req, res) {
 
 //get tests by fieldID
 router.get("/getTestsByFieldId/:fieldId",function(req,res){
-  //console.log(req.params['testId']);
   mainDB.getTestsByFieldId(req.params['fieldId'],(data)=>{res.json(data)});
 //res.send(req.params);
 });
@@ -58,14 +56,28 @@ router.get("/getQuestionsByFieldId/:fieldId",function(req,res){
   mainDB.getQuestionByFieldId(req.params['fieldId'],(data)=>{res.json(data)});
 });
 
+router.get("/getQuestionById/:questionId",function(req,res){
+  mainDB.getQuestionById(req.params['questionId'],(data)=>{res.json(data)});
+});
 
+router.post("/addUser",function(req, res) {
+  mainDB.addUser(req.body, (data) => {res.json(data)})
+})
+
+router.get("/getAnswersByQuestionId/:questionId",function(req,res){
+  mainDB.getAnswersByQuestionId(req.params['questionId'],(data)=>{res.json(data)});
+});
+
+router.post('/addQuestionsForTest',function(req, res) {
+  testId=req.body.pop();
+  list=req.body;
+  mainDB.addQuestionsForTest(testId,list, (data) => {res.json(data)})
+})
 //delete test
 
 //add questions to test
 
 //send mail 
-function sendMail(source, target, content){
 
-};
 
 module.exports = router;

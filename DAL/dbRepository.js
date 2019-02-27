@@ -187,6 +187,70 @@ class DBContext {
     });
   }
 
+  getQuestionById(questionId,callback){
+    var dbreq = dbPool.request();
+    dbreq.input("ID", sql.Int, questionId);
+    dbreq.execute("sp_getQuestionById", (err, data) => {
+      if (err) {
+        callback(err);
+      } else {
+        console.log(data.recordsets);
+        callback(data.recordsets);
+      }
+    });
+  }
+
+  getAnswersByQuestionId(questionId,callback){
+    var dbreq = dbPool.request();
+    dbreq.input("questionID", sql.Int, questionId);
+    dbreq.execute("sp_getAnswersByQuestionId", (err, data) => {
+      if (err) {
+        callback(err);
+      } else {
+        console.log(data.recordsets);
+        callback(data.recordsets);
+      }
+    });
+  }
+
+  addQuestionsForTest(testId,QuestionList,callback){
+    console.log(testId);
+    console.log(QuestionList);
+    for(let i=0;i<QuestionList.length;i++){
+      console.log("test id: "+testId);
+      console.log(QuestionList[i])
+      var dbreq = dbPool.request();
+      dbreq.input("testID", sql.Int, testId);
+      dbreq.input("questionID", sql.Int,+QuestionList[i]);
+      dbreq.execute("sp_addQuestionsForTest", (err, data) => {
+        if (err) {
+          callback(err);
+        } else {
+         // console.log(data.recordset);
+          //callback("ok");
+        }
+      });
+
+     }
+
+
+  }
+
+  addUser(){
+    var dbreq = dbPool.request();
+    // dbreq.input("fieldID", sql.Int, fieldId);
+    // dbreq.input("fieldID", sql.Int, fieldId);
+    // dbreq.input("fieldID", sql.Int, fieldId);
+    // dbreq.execute("sp_getQuestionsByFieldForShow", (err, data) => {
+    //   if (err) {
+    //     callback(err);
+    //   } else {
+    //     console.log(data.recordsets);
+    //     callback(data.recordsets);
+    //   }
+    // });
+  }
+
 
 }
 
