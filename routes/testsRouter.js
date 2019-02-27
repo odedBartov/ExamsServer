@@ -45,7 +45,11 @@ router.post("/getAnsweredTestsInRange", function(req, res) {
     res.json(data);
   })
 })
-
+router.post("/getAllAnsweredTest", function(req, res) {
+  mainDB.getAllAnsweredTest(req.body.testID, data => {
+    res.json(data);
+  })
+})
 
 
 //get test by id    example: http:/localhost:4040/testsapi/getTestById/7

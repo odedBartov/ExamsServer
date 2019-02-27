@@ -85,7 +85,7 @@ class DBContext {
     dbreq.input("layout", sql.NVarChar(50), question.layout);
     dbreq.input("tags", sql.NVarChar(300), question.tags);
     dbreq.input("fieldID", sql.Int, question.fieldID);
-    dbreq.input("answers", sql.TVP, this.answerToTVP(question.answers));
+    dbreq.input("answers", sql.TVP, this.answersToTVP(question.answers));
     dbreq.input(
       "corrects",
       sql.Int,
@@ -174,6 +174,17 @@ class DBContext {
         callback(data.recordsets);
       }
     });
+  }
+  getAllAnsweredTest(testID, callback) {
+    var dbreq = dbPool.request();
+    dbreq.input("testID", sql.Int, testID);
+    dbreq.execute("sp_getAllAnsweredTests", (err, data) => {
+      if (err){
+        callback(err);
+      } else {
+        callback(data.recordsets);
+      }
+    })
   }
   getTestById(testId, callback) {
     var dbreq = dbPool.request();
