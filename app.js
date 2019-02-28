@@ -1,10 +1,10 @@
 var express = require("express");
 var app = express();
-var userRouter = require('./routes/userRouter');
-var testsRouter=require('./routes/testsRouter');
-
 const bodyParser = require("body-parser");
-
+var userRouter = require("./routes/userRouter");
+var testsRouter = require("./routes/testsRouter");
+//var sql = require("mssql");
+//var config = require("./dbConfig");
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));

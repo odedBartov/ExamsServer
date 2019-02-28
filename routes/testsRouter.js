@@ -1,23 +1,59 @@
-var express = require('express');
+var express = require("express");
 var router = express.Router();
 
-var mailService=require('../Services/mailService');
-var mainDB = require('../DAL/dbRepository');
+var mailService = require("../Services/mailService");
+var mainDB = require("../DAL/dbRepository");
 
 //add test
 router.post("/addTest", function(req, res) {
-  //console.log('in add test');
-  //console.log(req.body);
-    mainDB.addTest(req.body,(data)=>{res.json(data)})
+  mainDB.addTest(req.body, data => {
+    res.json(data);
+  });
 });
-
+router.post("/addQuestion", function(req, res) {
+  mainDB.addQuestion(req.body, data => {
+    res.json(data);
+  });
+});
+router.post("/updateQuestion", function(req, res) {
+  mainDB.updateQuestion(req.body, data => {
+    res.json(data);
+  });
+});
+router.post("/getAnswers", function(req, res) {
+  mainDB.getAnswers(req.body.id, data => {
+    res.json(data);
+  });
+});
 router.post("/getQuestions", function(req, res) {
-    console.log(req.body);
-    mainDB.getQuestions(req.body, (data) => {res.json(data)})
+  mainDB.getQuestions(req.body.id, data => {
+    res.json(data);
+  });
+});
+router.get("/getTestsForField/:fieldID", function(req, res) {
+  mainDB.getTestsForField(req.params['fieldID'], data => {
+    res.json(data);
+  })
+})
+router.post("/submitTest", function(req, res) {
+  mainDB.submitTest(req.body, data => {
+    res.json(data);
+  })
+})
+router.post("/getAnsweredTestsInRange", function(req, res) {
+  mainDB.getTestsInRange(req.body, data => {
+    res.json(data);
+  })
+})
+router.post("/getAllAnsweredTest", function(req, res) {
+  mainDB.getAllAnsweredTest(req.body.testID, data => {
+    res.json(data);
+  })
 })
 
+
 //get test by id    example: http:/localhost:4040/testsapi/getTestById/7
-router.get("/getTestById/:testId",function(req,res){
+router.get("/getTestById/:testId", function(req, res) {
   //console.log(req.params['testId']);
   mainDB.getTestById(req.params['testId'],(data)=>{res.json(data)});
 //res.send(req.params);
@@ -79,5 +115,7 @@ router.post('/addQuestionsForTest',function(req, res) {
 
 //send mail 
 
+//send mail
+function sendMail(source, target, content) {}
 
 module.exports = router;
