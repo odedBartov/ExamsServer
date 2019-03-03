@@ -111,7 +111,7 @@ class DBContext {
     });
   }
   addTest(test, callback) {
-    console.log(test);
+    //console.log(test);
     var dbreq = dbPool.request();
     dbreq.input("name", sql.NVarChar(50), test.testName);
     dbreq.input("lastModifiedDate", sql.Date, test.lastModifiedDate);
@@ -193,7 +193,7 @@ class DBContext {
       if (err) {
         callback(err);
       } else {
-        console.log(data.recordset);
+     //   console.log(data.recordset);
         callback(data.recordset);
       }
     });
@@ -205,7 +205,7 @@ class DBContext {
       if (err) {
         callback(err);
       } else {
-        console.log(data.recordset);
+     //   console.log(data.recordset);
         callback(data.recordset);
       }
     });
@@ -228,14 +228,14 @@ class DBContext {
       if (err) {
         callback(err);
       } else {
-        console.log(data.recordsets);
+   //     console.log(data.recordsets);
         callback(data.recordsets);
       }
     });
   }
   activateTest(testId, callback) {
     var dbreq = dbPool.request();
-    console.log(testId.testID);
+   // console.log(testId.testID);
     dbreq.input("testID", sql.Int, testId.testID);
     dbreq.execute("sp_activateTest2", (err, data) => {
       if (err) {
@@ -283,7 +283,7 @@ class DBContext {
       if (err) {
         callback(err);
       } else {
-        console.log(data.recordsets);
+        //console.log(data.recordsets);
         callback(data.recordsets);
       }
     });
@@ -296,14 +296,16 @@ class DBContext {
       if (err) {
         callback(err);
       } else {
-        console.log(data.recordsets);
-        callback(data.recordsets);
+        //console.log(data.recordsets);
+        callback(data.recordset);
       }
     });
   }
 
   getAnswersByQuestionId(questionId,callback){
     var dbreq = dbPool.request();
+    console.log("in getAnswersByQuestionId");
+    console.log(questionId);
     dbreq.input("questionID", sql.Int, questionId);
     dbreq.execute("sp_getAnswersByQuestionId", (err, data) => {
       if (err) {
@@ -316,11 +318,11 @@ class DBContext {
   }
 
   addQuestionsForTest(testId,QuestionList,callback){
-    console.log(testId);
-    console.log(QuestionList);
+ //   console.log(testId);
+ //   console.log(QuestionList);
     for(let i=0;i<QuestionList.length;i++){
-      console.log("test id: "+testId);
-      console.log(QuestionList[i])
+ //     console.log("test id: "+testId);
+ //     console.log(QuestionList[i])
       var dbreq = dbPool.request();
       dbreq.input("testID", sql.Int, testId);
       dbreq.input("questionID", sql.Int,+QuestionList[i]);
@@ -335,6 +337,20 @@ class DBContext {
 
      }
 
+
+  }
+
+  getQuestionByTestId(testId,callback){
+    var dbreq = dbPool.request();
+    dbreq.input("testId", sql.Int, testId);
+    dbreq.execute("sp_getQuestionByTestId", (err, data) => {
+      if (err) {
+        callback(err);
+      } else {
+      //  console.log(data.recordsets);
+        callback(data.recordsets);
+      }
+    });
 
   }
 

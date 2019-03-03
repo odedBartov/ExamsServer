@@ -109,6 +109,11 @@ router.post('/addQuestionsForTest',function(req, res) {
   list=req.body;
   mainDB.addQuestionsForTest(testId,list, (data) => {res.json(data)})
 })
+
+router.get('/getQuestionByTestId/:testId',function (req,res){
+  mainDB.getQuestionByTestId(req.params['testId'],(data)=>{res.json(data)});
+})
+
 //delete test
 
 //add questions to test
