@@ -249,8 +249,8 @@ class DBContext {
   
   getTestsByFieldId(fieldId, callback) {
     var dbreq = dbPool.request();
-    dbreq.input("fieldID", sql.Int, fieldId);
-    dbreq.execute("sp_getTestsByFieldForTableTRY2", (err, data) => {
+    dbreq.input("fieldId", sql.Int, fieldId);
+    dbreq.execute("sp_getTestByFieldForTable", (err, data) => {
       if (err) {
         callback(err);
       } else {
