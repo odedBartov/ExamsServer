@@ -75,6 +75,17 @@ class DBContext {
       }
     });
   }
+  getQuestionsForTest(testID, callback) {
+    var dbreq = dbPool.request();
+    dbreq.input("testID", sql.Int, testID);
+    dbreq.execute("sp_getQuestionsForTest", (err, data) => {
+      if (err) {
+        callback(err);
+      } else {
+        callback(data.recordset);
+      }
+    })
+  }
   updateQuestion(question, callback) {
     var dbreq = dbPool.request();
     var answers = question.answers;
@@ -258,6 +269,40 @@ class DBContext {
         callback(err);
       } else {
         callback(data);
+      }
+    });
+  }
+  getAllStudents(callback) {
+    var dbreq = dbPool.request();
+    dbreq.execute("sp_getAllStudents", (err, data) => {
+      if (err) {
+        callback(err);
+      } else {
+        callback(data.recordset);
+      }
+    })
+  }
+  getTestForStudent(studentID, callback) {
+    var dbreq = dbPool.request();
+    dbreq.input("studentID", sql.Int, studentID);
+    dbreq.execute("sp_getTestsForStudent", (err, data) => {
+      if (err) {
+        callback(err);
+      } else {
+        callback(data.recordset);
+      }
+    })
+  }
+  getQuestionsAndAnsweresForAnsweredTest(details, callback) {
+    var dbreq = dbPool.request();
+    dbreq.input("answeredTestID", sql.Int, details.answeredTestID);
+    dbreq.input("testID", sql.Int, details.testID);
+    dbreq.input("studentID", sql.Int, details.studentID);
+    dbreq.execute("sp_getQuestionsAndAnsweresForAnsweredTest", (err, data) => {
+      if (err) {
+        callback(err);
+      } else {
+        callback(data.recordsets);
       }
     });
   }

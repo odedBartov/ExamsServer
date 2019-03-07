@@ -30,6 +30,11 @@ router.post("/getQuestions", function(req, res) {
     res.json(data);
   });
 });
+router.get("/getQuestionsForTest/:testID", function(req, res) {
+  mainDB.getQuestionsForTest(req.params['testID'], data => {
+    res.json(data);
+  })
+})
 router.get("/getTestsForField/:fieldID", function(req, res) {
   mainDB.getTestsForField(req.params['fieldID'], data => {
     res.json(data);
@@ -52,11 +57,10 @@ router.post("/getAllAnsweredTest", function(req, res) {
 })
 
 
+
 //get test by id    example: http:/localhost:4040/testsapi/getTestById/7
 router.get("/getTestById/:testId", function(req, res) {
-  //console.log(req.params['testId']);
   mainDB.getTestById(req.params['testId'],(data)=>{res.json(data)});
-//res.send(req.params);
 });
 
 //get test by link  example: http:/localhost:4040/testsapi/getTestByLink?testLink=lala/lala
