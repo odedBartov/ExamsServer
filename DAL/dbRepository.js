@@ -315,14 +315,14 @@ class DBContext {
 
   getAnswersByQuestionId(questionId,callback){
     var dbreq = dbPool.request();
-    console.log("in getAnswersByQuestionId");
-    console.log(questionId);
+    // console.log("in getAnswersByQuestionId");
+    // console.log(questionId);
     dbreq.input("questionID", sql.Int, questionId);
     dbreq.execute("sp_getAnswersByQuestionId", (err, data) => {
       if (err) {
         callback(err);
       } else {
-        console.log(data.recordsets);
+        // console.log(data.recordsets);
         callback(data.recordsets);
       }
     });
@@ -365,19 +365,21 @@ class DBContext {
 
   }
 
-  addUser(){
+  addUser(user,callback){
+    console.log("in add user db rep");
+    console.log(user);
     var dbreq = dbPool.request();
-    // dbreq.input("fieldID", sql.Int, fieldId);
-    // dbreq.input("fieldID", sql.Int, fieldId);
-    // dbreq.input("fieldID", sql.Int, fieldId);
-    // dbreq.execute("sp_getQuestionsByFieldForShow", (err, data) => {
-    //   if (err) {
-    //     callback(err);
-    //   } else {
-    //     console.log(data.recordsets);
-    //     callback(data.recordsets);
-    //   }
-    // });
+    dbreq.input("firstName", sql.NVarChar, user.firstName);
+    dbreq.input("lastName", sql.NVarChar, user.lastName);
+    dbreq.input("email", sql.NVarChar, user.email);
+    dbreq.execute("sp_addNewUser", (err, data) => {
+      if (err) {
+        callback(err);
+      } else {
+        console.log(data.recordsets);
+        callback(data.recordsets);
+      }
+    });
   }
 
 

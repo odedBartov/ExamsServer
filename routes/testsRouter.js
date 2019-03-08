@@ -101,6 +101,8 @@ router.get("/getQuestionById/:questionId",function(req,res){
 });
 
 router.post("/addUser",function(req, res) {
+  console.log("in router.post")
+  console.log(req.body)
   mainDB.addUser(req.body, (data) => {res.json(data)})
 })
 
@@ -117,6 +119,19 @@ router.post('/addQuestionsForTest',function(req, res) {
 router.get('/getQuestionByTestId/:testId',function (req,res){
   mainDB.getQuestionByTestId(req.params['testId'],(data)=>{res.json(data)});
 })
+
+router.post("/addExam",function(req,res){
+  console.log(req.body);
+
+  //get user id by email
+
+// add to answeredTest  //change the table to not null
+
+  //add to table Answers-Questions
+
+
+
+});
 
 //delete test
 
