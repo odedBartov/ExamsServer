@@ -270,19 +270,19 @@ class DBContext {
     });
   }
 
-  submitTest(test, callback) {
+  submitTest(userId,testID,grade,currentQuestion,isFinished,answeresId,callback) {
     var dbreq = dbPool.request();
-    dbreq.input("testID", sql.Int, test.testID);
-    dbreq.input("userID", sql.Int, test.userID);
-    dbreq.input("isFinished", sql.Bit, test.isFinished);
-    dbreq.input("currentQuestion", sql.Int, test.currentQuestion);
-    dbreq.input("grade", sql.Int, test.grade);
-    dbreq.input("answers", sql.TVP, this.answeredQuestionsToTVP(test.answers));
+    dbreq.input("testID", sql.Int, testID);
+    dbreq.input("userID", sql.Int,userId);
+    dbreq.input("isFinished", sql.Bit, isFinished);
+    dbreq.input("currentQuestion", sql.Int, currentQuestion);
+    dbreq.input("grade", sql.Int, grade);
+    dbreq.input("answers", sql.TVP, this.answeredQuestionsToTVP(answeresId));
     dbreq.execute("sp_submitTest", (err, data) => {
       if (err) {
         callback(err);
       } else {
-        callback(data);
+        callback(data.recordset);
       }
     });
   }
@@ -366,8 +366,6 @@ class DBContext {
   }
 
   addUser(user,callback){
-    console.log("in add user db rep");
-    console.log(user);
     var dbreq = dbPool.request();
     dbreq.input("firstName", sql.NVarChar, user.firstName);
     dbreq.input("lastName", sql.NVarChar, user.lastName);
@@ -417,6 +415,37 @@ class DBContext {
       }
     });
   }
+
+  getUserIdByMail(mail,callback){
+    var dbreq = dbPool.request();
+    dbreq.input("email", sql.NVarChar, mail);
+    dbreq.execute("sp_getUserIdByMail", (err, data) => {
+      if (err) {
+        callback(err);
+      } else {
+        callback(data.recordset[0]);
+      }
+    });
+  };
+
+  addToAnsweredTest(userId,testID,grade,currentQuestion,isFinished,callback){
+    var dbreq = dbPool.request();
+    dbreq.input("userId", sql.Int, userId);
+    dbreq.input("testId", sql.Int, testID);
+    dbreq.input("grade", sql.Int, grade);
+    dbreq.input("currentQuestion", sql.Int, currentQuestion);
+    dbreq.input("isFinished", sql.Int, isFinished);
+    dbreq.execute("sp_addToAnsweredTest", (err, data) => {
+      if (err) {
+        callback(err);
+      } else {
+        callback(data.recordset);
+      }
+    });
+  };
+
+
+
 }
 
 module.exports = new DBContext();

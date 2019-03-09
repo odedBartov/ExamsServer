@@ -101,8 +101,6 @@ router.get("/getQuestionById/:questionId",function(req,res){
 });
 
 router.post("/addUser",function(req, res) {
-  console.log("in router.post")
-  console.log(req.body)
   mainDB.addUser(req.body, (data) => {res.json(data)})
 })
 
@@ -120,15 +118,42 @@ router.get('/getQuestionByTestId/:testId',function (req,res){
   mainDB.getQuestionByTestId(req.params['testId'],(data)=>{res.json(data)});
 })
 
-router.post("/addExam",function(req,res){
+router.post("/addExam",function (req,res){
+  console.log("in rouetr.addExam");
   console.log(req.body);
+  console.log(req.body['test']);
+  console.log(req.body['answersArr']);
+  console.log(req.body['user']);
+  console.log("in rouetr.addExam");
+  let test=req.body['test'];
+  let answersArr=req.body['answersArr'];
+  let user=req.body['user'];
+  console.log(answersArr);
+  let answersID=[];
+  //answersArr.array.forEach(a => {answersID.push(a.ID) });
+  for (let i = 0; i < answersArr.length; i++) {
+    answersID.push(answersArr[i].ID)
+  }
 
   //get user id by email
+  mainDB.getUserIdByMail(user.email,(data)=>{
+    console.log(data);
+    console.log(data["ID"]);
+    user.id=data["ID"]
+  
+  // add to answeredTest  //change the table to not null
+  //TODO:: calculate the grade
+  //TODO:: calculate the current question status
+  //TODO:: calculate the is finished
+  let answeredTestID;
+  //mainDB.addToAnsweredTest(user.id,test.ID,70,1,true,(data)=>{answeredTestID=data});
+  mainDB.submitTest(user.id,test.ID,70,1,true,answersID,(data)=>{
+    console.log(data)
+    answeredTestID=data
+  });
 
-// add to answeredTest  //change the table to not null
-
-  //add to table Answers-Questions
-
+});
+  //add answeres to table Answers-Questions
 
 
 });
